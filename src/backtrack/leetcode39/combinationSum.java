@@ -28,7 +28,8 @@ class Solution {
 
     // 类似求所有的子集
     public void backtrack(List<List<Integer>> res, List<Integer> path, int start, int[] candidates, int target){
-        System.out.println(path);
+        // System.out.print("#");
+        // System.out.println(path);
         int sum = 0;
         for(int x : path){
             sum += x;
@@ -38,7 +39,7 @@ class Solution {
         }
         // System.out.println(sum);
         if(sum == target){
-            System.out.println(path);
+            // System.out.println(path);
             List<Integer> pathCopy = new ArrayList<>(path);
             res.add(pathCopy);
         }
@@ -47,7 +48,7 @@ class Solution {
         for(int i=start; i<candidates.length; i++){
             path.add(candidates[i]);
 
-            backtrack(res, path, i+1, candidates, target);
+            backtrack(res, path, i, candidates, target);
 
             path.remove(path.size()-1);
         }
