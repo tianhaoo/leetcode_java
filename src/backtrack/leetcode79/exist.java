@@ -8,17 +8,24 @@ import java.util.List;
 public class exist {
     public static void main(String[] args) {
         Solution solution = new Solution();
-        char[][] board = {
-            {'A','B','C','E'},
-            {'S','F','C','S'},
-            {'A','D','E','E'}
-        };
-        String word="SEE";
 
 //        char[][] board = {
+//            {'A','B','C','E'},
+//            {'S','F','C','S'},
+//            {'A','D','E','E'}
+//        };
+//        String word="ABCCED";
+
+//        char[][] board = {
+//                {'a'},
 //                {'a'}
 //        };
-//        String word="a";
+//        String word="b";
+
+        char[][] board = {
+                {'a'}
+        };
+        String word="a";
         System.out.println(solution.exist(board, word));
     }
 }
@@ -29,6 +36,10 @@ class Solution {
 
         int m = board.length;
         int n = board[0].length;
+        if(m==1 && n==1){
+            return String.valueOf(board[m-1][n-1]).equals(word);
+        }
+
         boolean[] exist = {false};
         int[][] directions = {
                 {0, 1},
@@ -38,17 +49,16 @@ class Solution {
         };
         for(int i=0; i<m; i++){
             for(int j=0; j<n; j++){
-                System.out.println(i);
-                System.out.println(j);
+                // System.out.println(i + ", " + j + " " + board[i][j]);
                 List<Character> path = new ArrayList<>();
                 if (!exist[0]){
-                    boolean [][] selected = new boolean[m][n];
+                    boolean [][] visited = new boolean[m][n];
                     for(int k=0; k<m; k++){
                         for(int v=0; v<n; v++){
-                            selected[k][v] = false;
+                            visited[k][v] = false;
                         }
                     }
-                    backtrack(path, board, word, i, j, selected, directions, exist);
+                    backtrack(path, board, word, i, j, 0, visited, directions, exist);
                 }
             }
         }
@@ -69,53 +79,32 @@ class Solution {
         return true;
     }
 
-    public void backtrack(List<Character> path, char[][] board, String word, int i, int j, boolean[][] selected, int[][] directions, boolean[] exist){
+    public void backtrack(List<Character> path, char[][] board, String word, int startX, int startY, int pos, boolean[][] visited, int[][] directions, boolean[] exist){
         if(exist[0] == true){
             return;
         }
-//        if(!selected[i][j]){
-//            path.add(board[i][j]);
-//            selected[i][j] = true;
-//        }
+        // System.out.println(startX + "# " + startY);
 
-
-        Character[] pathCharacterArray = path.toArray(new Character[path.size()]);
-        char[] pathCharArray = new char[pathCharacterArray.length];
-        for(int k=0; k<pathCharacterArray.length; k++){
-            pathCharArray[k] = pathCharacterArray[k];
-        }
-        String pathString = String.valueOf(pathCharArray);
-        System.out.println(pathString);
-
-        if(pathString.equals(word)){
+        if(board[startX][startY] != word.charAt(pos)){
+            exist[0] = false;
+            return;
+        } else if(pos == word.length()-1){
             exist[0] = true;
-            // System.out.println(exist[0]);
-            return;
-        }
-
-        if(pathString.length() >= word.length()){
-            return;
-        }
-
-        if(pathString.length() >=1 && pathString.charAt(pathString.length()-1) != board[i][j]){
             return;
         }
 
 
-        char c = board[i][j];
-        path.add(c);
-        selected[i][j] = true;
+        visited[startX][startY] = true;
 
         for (int[] direction : directions) {
-            int m = i+direction[0];
-            int n = j+direction[1];
+            int m = startX + direction[0];
+            int n = startY + direction[1];
 
-            if (isValid(board, m, n) && !selected[m][n]) {
-                backtrack(path, board, word, m, n, selected, directions, exist);
+            if (isValid(board, m, n) && !visited[m][n]) {
+                backtrack(path, board, word, m, n, pos+1, visited, directions, exist);
             }
         }
 
-        path.remove(path.size() - 1);
-        selected[i][j] = false;
+        visited[startX][startY] = false;
     }
 }
